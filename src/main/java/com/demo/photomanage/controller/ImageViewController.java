@@ -14,6 +14,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -29,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 
-import static java.lang.Math.abs;
+import static java.lang.Math.*;
 
 public class ImageViewController {
     @FXML
@@ -63,6 +64,9 @@ public class ImageViewController {
     private ArrayList<File> images = new ArrayList<>(); // 原项目用的是自写类
     private long TimeStamp = 0;
     private final static double GAP = 20;   // 图片和边缘的距离gap/2 好像有问题
+    private double imageScale;
+    private final static double MAX_SCALE = 1000;
+    private final static double MIN_SCALE = 10;
     @FXML
     public void initialize(){}
     public void init(Stage stage, String path){
@@ -97,6 +101,7 @@ public class ImageViewController {
         }
         curimage = new Image(images.get(curimageidx).getPath());
         imageview.getTransforms().clear();
+        imageScale = 100;
         imageview.setImage(curimage);
         stage.setTitle(Tools.getImageName(curimage));
         double width = curimage.getWidth(), height = curimage.getHeight();
@@ -210,18 +215,58 @@ public class ImageViewController {
         updateImageView();
     }
 
+    /**
+     * 图片缩放
+     * @param x  缩放中心x
+     * @param y  缩放中心y
+     * @param delta   缩放大小
+     */
+    private void Zoom(double x, double y, double delta){
+        if(delta > 1 && imageScale < MAX_SCALE) {
+            double del = (delta-1)*100;
+            delta = min(delta, (min(MAX_SCALE, imageScale+del)-imageScale)/100+1);
+            imageScale = min(MAX_SCALE, imageScale+del);
+            // 放大，中心为(x, y)
+            imageview.getTransforms().add(new Scale(delta, delta, x, y));
+        }
+        else if(delta < 1 && imageScale > MIN_SCALE){
+            double del = (1-delta)*100;
+            delta = max(delta, 1-(imageScale - max(MIN_SCALE, imageScale-del))/100);
+            imageScale = max(MIN_SCALE, imageScale-del);
+            // 放大，中心为(x, y)
+            imageview.getTransforms().add(new Scale(delta, delta, x, y));
+        }
+    }
     @FXML
     private void ZoomIn() {
-        // 1.1 1.1放大，中心为图片中心(也有可能是上半部分窗口中心)
-        imageview.getTransforms().add(
-                new Scale(1.1, 1.1, imageview.prefWidth(-1) / 2, imageview.prefHeight(-1) / 2));
+        Zoom(imageview.prefWidth(-1) / 2, imageview.prefHeight(-1) / 2, 1.1);
     }
 
     @FXML
     private void ZoomOut() {
-        imageview.getTransforms().add(
-                new Scale(0.9, 0.9, imageview.prefWidth(-1) / 2, imageview.prefHeight(-1) / 2));
+        Zoom(imageview.prefWidth(-1) / 2, imageview.prefHeight(-1) / 2, 0.9);
     }
+
+    /**
+     * 鼠标滚动
+     */
+    @FXML
+    private void ScrollZoom(ScrollEvent e){
+        double delta = e.getDeltaY();
+        System.out.println(delta);
+        int times = 1;
+        if(e.isAltDown())times = 4;
+        for(int i = 0; i < times; i++) {
+            Zoom(e.getX(), e.getY(), 1 + delta / 320);
+        }
+        System.out.println(imageScale);
+//        if(delta > 0){
+//        }
+//        else if(delta < 0){
+//            Zoom(e.getX(), e.getY(), 0.9);
+//        }
+    }
+
     @FXML
     private void Play() {
         Dialog<PlayData> dialog = GenerateDialog.NewPlayDialog();

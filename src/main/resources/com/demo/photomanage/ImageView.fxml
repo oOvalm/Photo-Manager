@@ -14,7 +14,7 @@
          <center>
             <StackPane fx:id="imagepane" prefHeight="412.0" prefWidth="600.0" BorderPane.alignment="CENTER">
                <children>
-                  <ImageView fx:id="imageview" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="imageview" fitHeight="150.0" fitWidth="200.0" onScroll="#ScrollZoom" pickOnBounds="true" preserveRatio="true" />
                </children>
             </StackPane>
          </center>
