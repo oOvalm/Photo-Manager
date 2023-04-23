@@ -435,10 +435,24 @@ public class MainViewController {
      */
     private String pathTextCurrent;
     private void initPathText(){
-
         pathText.setOnKeyPressed(e->{
             if(e.getCode() == KeyCode.ENTER){
-
+                root.requestFocus();
+                String path = pathText.getText();
+                File file = new File(path);
+                if(!file.exists()) {
+                    pathText.setText(pathTextCurrent);
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "文件路径 " + path + "不存在");
+                    alert.showAndWait();
+                }
+                else if(file.isDirectory()){
+                    TreeViewFile.getSelectionModel().select(new myTreeItem(file));
+                    pathTextCurrent = path;
+                }
+                else if(Tools.isLegalFileType(file)) {
+                    Platform.runLater(()->ImageMain.main(path, this, false));
+                    pathText.setText(pathTextCurrent);
+                }
             }
         });
 
