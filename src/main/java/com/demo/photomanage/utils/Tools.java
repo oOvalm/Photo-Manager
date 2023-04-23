@@ -28,7 +28,7 @@ public class Tools {
     public static ArrayList<File> getAvailableImageFiles(File[] files){
         ArrayList<File> result = new ArrayList<>();
         for(File f:files){
-            if(f.isFile() && LEGAL_TYPE.contains(getFileType(f))){
+            if(f.isFile() && isLegalFileType(f)){
                 result.add(f);
             }
         }
@@ -128,6 +128,10 @@ public class Tools {
             return str.substring(0, i) + "...";
         }
         return str;
+    }
+    public static boolean isLegalFileType(File f){
+        if(f==null || !f.exists() || f.isDirectory())return false;
+        return LEGAL_TYPE.contains(getFileType(f));
     }
 
     /**
