@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.demo.photomanage.controller.ImageViewController">
+   <children>
+      <BorderPane fx:id="borderpane" prefHeight="400.0" prefWidth="600.0">
+         <center>
+            <StackPane fx:id="imagepane" prefHeight="412.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+               <children>
+                  <ImageView fx:id="imageview" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </StackPane>
+         </center>
+         <bottom>
+            <HBox fx:id="buttonbox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="zoomin" focusTraversable="false" mnemonicParsing="false" onAction="#ZoomIn" prefHeight="30.0" prefWidth="60.0" text="+" />
+                  <Button fx:id="zoomout" focusTraversable="false" mnemonicParsing="false" onAction="#ZoomOut" prefHeight="30.0" prefWidth="60.0" text="-" />
+                  <Button fx:id="previmage" focusTraversable="false" mnemonicParsing="false" onAction="#PrevImage" prefHeight="30.0" prefWidth="60.0" text="&lt;-" />
+                  <Button fx:id="playppt" focusTraversable="false" mnemonicParsing="false" onAction="#Play" prefHeight="30.0" prefWidth="60.0" text="播放" />
+                  <Button fx:id="nextimage" mnemonicParsing="false" onAction="#NextImage" prefHeight="30.0" prefWidth="60.0" text="-&gt;" />
+               </children>
+               <padding>
+                  <Insets bottom="10.0" />
+               </padding>
+            </HBox>
+         </bottom>
+      </BorderPane>
+   </children>
+</AnchorPane>
