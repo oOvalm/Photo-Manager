@@ -14,12 +14,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.transform.Scale;
+import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 import java.io.File;
 import java.security.Key;
@@ -36,6 +38,8 @@ public class ImageViewController {
     @FXML
     private BorderPane borderpane;
     @FXML
+    private StackPane imagepane;
+    @FXML
     private ImageView imageview;
     @FXML
     private HBox buttonbox;
@@ -45,8 +49,6 @@ public class ImageViewController {
     @FXML
     private Button playppt;
 
-    @FXML
-    private StackPane imagepane;
 
     @FXML
     private Button previmage;
@@ -56,6 +58,9 @@ public class ImageViewController {
 
     @FXML
     private Button zoomout;
+
+    @FXML
+    private Button resetButton;
 
     private File directory;
     private Stage stage;
@@ -87,6 +92,8 @@ public class ImageViewController {
             if(file.equals(images.get(i)))curimageidx = i;
         }
         updateImageView();
+        imagepane.setOnKeyPressed(this::normalImagePaneHandle);
+        imagepane.requestFocus();
 
     }
     private void updateImageView(){
@@ -172,20 +179,6 @@ public class ImageViewController {
 //        });
     }
 
-    /**
-     * 还不知道挂那个控件上
-     */
-    @FXML
-    private void KeyPressed(KeyEvent e){
-        System.out.println("wwow");
-        System.out.println(e.getCode());
-        if(e.getCode() == KeyCode.LEFT){
-            PrevImage();
-        }
-        else if(e.getCode() == KeyCode.RIGHT){
-            NextImage();
-        }
-    }
     @FXML
     private void NextImage() {
         curimageidx++;
@@ -199,6 +192,7 @@ public class ImageViewController {
                     .show();
         }
         updateImageView();
+        imagepane.requestFocus();
     }
     @FXML
     private void PrevImage() {
@@ -213,6 +207,7 @@ public class ImageViewController {
                     .show();
         }
         updateImageView();
+        imagepane.requestFocus();
     }
 
     /**
@@ -240,13 +235,20 @@ public class ImageViewController {
     @FXML
     private void ZoomIn() {
         Zoom(imageview.prefWidth(-1) / 2, imageview.prefHeight(-1) / 2, 1.1);
+        imagepane.requestFocus();
     }
 
     @FXML
     private void ZoomOut() {
         Zoom(imageview.prefWidth(-1) / 2, imageview.prefHeight(-1) / 2, 0.9);
+        imagepane.requestFocus();
     }
-
+    @FXML
+    private void ResetImage(){
+        // 清空缩放位移效果
+        imageview.getTransforms().clear();
+        imagepane.requestFocus();
+    }
     /**
      * 鼠标滚动
      */
@@ -267,6 +269,9 @@ public class ImageViewController {
 //        }
     }
 
+    /**
+     * 幻灯片相关
+     */
     @FXML
     private void Play() {
         Dialog<PlayData> dialog = GenerateDialog.NewPlayDialog();
@@ -305,9 +310,10 @@ public class ImageViewController {
             if(e.getCode() == KeyCode.ESCAPE){
                 timeline.stop();
                 stage.setMaximized(oriView);
-                imagepane.setOnKeyPressed(ee->{});
+                imagepane.setOnKeyPressed(this::normalImagePaneHandle);
             }
             else if(e.getCode() == KeyCode.LEFT){
+                timeline.stop();
                 PrevImage();
                 updateImageView();
                 timeline.play();    // 重置计时
@@ -319,5 +325,28 @@ public class ImageViewController {
                 timeline.play();
             }
         });
+    }
+
+    private void normalImagePaneHandle(KeyEvent e){
+        if(e.getCode() == KeyCode.LEFT){
+            PrevImage();
+        }
+        else if(e.getCode() == KeyCode.RIGHT){
+            NextImage();
+        }
+    }
+
+    /**
+     * 鼠标拖动相关
+     */
+    private double pressX, pressY;
+    @FXML
+    private void MousePressed(MouseEvent e){
+        pressX = e.getX();
+        pressY = e.getY();
+    }
+    @FXML
+    private void MouseDragged(MouseEvent e){
+        imageview.getTransforms().add(new Translate(e.getX() - pressX, e.getY() - pressY));
     }
 }
