@@ -51,13 +51,7 @@ public class MainViewController {
     private AnchorPane root;
 
     @FXML
-    private TextField searchText;
-
-    @FXML
     private SplitPane splitpane1;
-
-    @FXML
-    private HBox upleftHbox;
 
     @FXML
     private Button upwardButton;
@@ -155,8 +149,7 @@ public class MainViewController {
 
             // 顶部文本框那行
             upperPane.setPrefWidth(width);
-            upleftHbox.setLayoutX(width-upleftHbox.getPrefWidth());
-            pathText.setPrefWidth(Math.min(pathText.getMaxWidth(), width-3*backButton.getPrefWidth()-searchText.getPrefWidth()-20));
+            pathText.setPrefWidth(Math.min(pathText.getMaxWidth(), width-3*backButton.getPrefWidth()-80));
 
         });
     }
@@ -244,16 +237,28 @@ public class MainViewController {
     /**
      * 更新底部标签
      */
-    public void updateTipInfoLabel(int total, String totalsize, int select, String selectsize){
+    public void updateTipInfoLabel(int total, String totalsize, int select, String selectsize, double... size){
         if(select == 0)
             TipInfoLabel.setText(String.format("%d张照片 (%s)", total, totalsize));
-        else if(select == 1)
-            TipInfoLabel.setText(String.format("%d张照片 (%s)\t选中 %d 张图片 (%s)", total, totalsize, select, selectsize));
+        else if(select == 1) {
+            assert (size.length == 2);
+            TipInfoLabel.setText(String.format("%d张照片 (%s)\t选中 %d 张图片 \t%s (%.0fpx ×%.0fpx)",
+                                        total, totalsize, select, selectsize, size[0], size[1]));
+        }
         else
             TipInfoLabel.setText(String.format("%d张照片 (%s)\t已选择 %d 张图片 (%s)", total, totalsize, select, selectsize));
     }
-    public void updateTipInfoLabel(){
-        updateTipInfoLabel(previewFlowPane.getImageNum(),previewFlowPane.getImageSize(),previewFlowPane.getChoseImageNum(),previewFlowPane.getChoseImageSize());
+    public void updateTipInfoLabel() {
+        int selectsize = previewFlowPane.getChoseImages().size();
+        if(selectsize != 1)
+            updateTipInfoLabel(previewFlowPane.getImageNum(), previewFlowPane.getImageSize(),
+                    previewFlowPane.getChoseImageNum(), previewFlowPane.getChoseImageSize());
+        else {
+            double width = previewFlowPane.getChoseImages().get(0).getActualWidth();
+            double height = previewFlowPane.getChoseImages().get(0).getActualHeight();
+            updateTipInfoLabel(previewFlowPane.getImageNum(), previewFlowPane.getImageSize(),
+                    previewFlowPane.getChoseImageNum(), previewFlowPane.getChoseImageSize(), width, height);
+        }
     }
 
     /**

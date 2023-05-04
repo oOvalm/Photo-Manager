@@ -24,6 +24,9 @@ import java.io.File;
 // https://www.yiibai.com/javafx/javafx_borderpane.html
 public class ThumbnailPane extends BorderPane {
     private ImageView imageView;
+    private Image actualImage;
+    private double actualWidth;
+    private double actualHeight;
     private File imageFile;
     private Text imageName;
     private TextField textField;
@@ -42,17 +45,27 @@ public class ThumbnailPane extends BorderPane {
 
         imageFile = file;
         mainController = mainViewController;
+        Thread thread = new Thread(()->{
+            actualImage = new Image(file.getPath());
+            actualWidth = actualImage.getWidth();
+            actualHeight = actualImage.getHeight();
+//            System.out.println("OK");
+        });
         // Image(路径，宽，高，保持比例，smooth，后台加载(开了无图))
         // 图片比例好像还是有问题(solved)
-        imageView = new ImageView(new Image(file.getPath(), 100, 100, true, true, false));
-        imageView.setFitWidth(SIZE);
-        imageView.setFitHeight(SIZE);
-        imageView.setPreserveRatio(true);
+        Platform.runLater(()->{
+            imageView = new ImageView(new Image(file.getPath(), 80, 80, true, true, false));
+//            imageView = new ImageView(new Image(file.getPath()));
+            imageView.setFitWidth(SIZE);
+            imageView.setFitHeight(SIZE);
+            imageView.setPreserveRatio(true);
+            this.setCenter(imageView);
+            thread.start();
+        });
         imageName = new Text(Tools.shortenString(file.getName(), MAX_LEN));
         BorderPane.setAlignment(imageName, Pos.CENTER); // 文字居中
         // 设置容器大小
         this.setPrefSize(SIZE+30, SIZE+50);
-        this.setCenter(imageView);
         this.setBottom(imageName);
 
         textField = new TextField();
@@ -77,6 +90,7 @@ public class ThumbnailPane extends BorderPane {
                 Platform.runLater(()->ImageMain.main(imageFile.getAbsolutePath(), mainController, false));   // 可以ImageMain 实现runnable 实现多线程
             }
         });
+
     }
 
     public void Select(){
@@ -131,4 +145,6 @@ public class ThumbnailPane extends BorderPane {
         }
         return 0;
     }
+    public double getActualWidth(){return actualWidth;}
+    public double getActualHeight(){return actualHeight;}
 }
