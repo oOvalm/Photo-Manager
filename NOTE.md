@@ -77,7 +77,7 @@ Notifications.create()
 
 现布局为`BorderPane`，中间为放`ImageView`的`StackPane`，底部放`Hbox`。感觉将`BorderPane`改成`Hbox`，更合理。
 
-## things
+## model
 
 ### 	myTreeItem
 
@@ -96,6 +96,10 @@ Notifications.create()
 继承了JavaFx自带的FlowPane布局
 
 记录打开文件夹中的图片信息
+
+### myMenu
+
+继承ContextMenu，实现菜单选项的功能
 
 
 ## utils
