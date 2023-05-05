@@ -10,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -17,6 +18,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 
@@ -29,7 +31,7 @@ public class ThumbnailPane extends BorderPane {
     private double actualHeight;
     private File imageFile;
     private Text imageName;
-    private TextField textField;
+    private TextArea textField;
     private boolean isSelect;
 
     private static final double SIZE = 100;  // 缩略图大小 (小于加载图片的大小)
@@ -51,11 +53,11 @@ public class ThumbnailPane extends BorderPane {
             actualHeight = actualImage.getHeight();
 //            System.out.println("OK");
         });
-        // Image(路径，宽，高，保持比例，smooth，后台加载(开了无图))
+        // Image(路径，宽，高，保持比例，smooth，后台加载(开了无图(solved)))
         // 图片比例好像还是有问题(solved)
         Platform.runLater(()->{
-            imageView = new ImageView(new Image(file.getPath(), 80, 80, true, true, false));
-//            imageView = new ImageView(new Image(file.getPath()));
+            imageView = new ImageView(new Image(file.toPath().toUri().toString(), 120, 120, true, true, true));
+//            imageView = new ImageView(new Image(file.toPath().toUri().toString()));
             imageView.setFitWidth(SIZE);
             imageView.setFitHeight(SIZE);
             imageView.setPreserveRatio(true);
@@ -68,9 +70,10 @@ public class ThumbnailPane extends BorderPane {
         this.setPrefSize(SIZE+30, SIZE+50);
         this.setBottom(imageName);
 
-        textField = new TextField();
+        textField = new TextArea();
+        textField.setMaxHeight(40);
+        textField.setWrapText(true);    // 自动换行
         textField.setDisable(true);
-
         // 鼠标点击事件
         setOnMouseClicked(e->{
             myFlowPane father = (myFlowPane) this.getParent();  // 获取他爹
