@@ -8,6 +8,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -24,9 +25,11 @@ import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 import java.io.File;
+import java.net.URL;
 import java.security.Key;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
 import javafx.util.Duration;
@@ -34,7 +37,7 @@ import org.controlsfx.control.Notifications;
 
 import static java.lang.Math.*;
 
-public class ImageViewController {
+public class ImageViewController implements Initializable {
     @FXML
     private BorderPane borderpane;
     @FXML
@@ -72,8 +75,8 @@ public class ImageViewController {
     private double imageScale;
     private final static double MAX_SCALE = 1000;
     private final static double MIN_SCALE = 10;
-    @FXML
-    public void initialize(){}
+    @Override
+    public void initialize(URL location, ResourceBundle resources){}
     public void init(Stage stage, String path){
         this.stage = stage;
         autoAdapt();

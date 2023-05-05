@@ -28,7 +28,7 @@ import java.util.*;
 
 import static com.demo.photomanage.utils.GlobalValue.ROOT_FILE;
 
-public class MainViewController {
+public class MainViewController implements Initializable {
     @FXML
     private VBox Mainvbox;
 
@@ -75,8 +75,9 @@ public class MainViewController {
     private ContextMenu menu = new ContextMenu();
 
     public MainViewController(){}
-    @FXML
-    public void initialize(){
+    @Override
+    public void initialize(URL location, ResourceBundle resources){
+//        System.out.println("FXML");
         initPreviewPane();      // 右侧布局
         initTreeViewFile();     // 目录树
         initMenu();             // 鼠标右键菜单
