@@ -112,8 +112,8 @@ public class ImageViewController {
         imageview.setImage(curimage);
         stage.setTitle(Tools.getImageName(curimage));
         double width = curimage.getWidth(), height = curimage.getHeight();
-        System.out.println(imagepane.widthProperty());
-        System.out.println(imagepane.heightProperty());
+//        System.out.println(imagepane.widthProperty());
+//        System.out.println(imagepane.heightProperty());
         // 放得下直接放
         if(width <= imagepane.getWidth()-GAP && height <= imagepane.getHeight()-GAP){
             imageview.fitWidthProperty().bind(imagepane.widthProperty());
@@ -255,13 +255,13 @@ public class ImageViewController {
     @FXML
     private void ScrollZoom(ScrollEvent e){
         double delta = e.getDeltaY();
-        System.out.println(delta);
+//        System.out.println(delta);
         int times = 1;
         if(e.isAltDown())times = 4;
         for(int i = 0; i < times; i++) {
             Zoom(e.getX(), e.getY(), 1 + delta / 320);
         }
-        System.out.println(imageScale);
+//        System.out.println(imageScale);
 //        if(delta > 0){
 //        }
 //        else if(delta < 0){

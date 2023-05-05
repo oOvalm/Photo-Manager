@@ -3,15 +3,13 @@ package com.demo.photomanage.things;
 import com.demo.photomanage.ImageMain;
 import com.demo.photomanage.Main;
 import com.demo.photomanage.controller.MainViewController;
+import com.demo.photomanage.utils.GenerateDialog;
 import com.demo.photomanage.utils.Tools;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -23,15 +21,16 @@ import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 
 import java.io.File;
+import java.util.Optional;
+
 // https://www.yiibai.com/javafx/javafx_borderpane.html
 public class ThumbnailPane extends BorderPane {
     private ImageView imageView;
-    private Image actualImage;
     private double actualWidth;
     private double actualHeight;
     private File imageFile;
     private Text imageName;
-    private TextArea textField;
+    private TextField textField;    // discarded
     private boolean isSelect;
 
     private static final double SIZE = 100;  // 缩略图大小 (小于加载图片的大小)
@@ -48,7 +47,7 @@ public class ThumbnailPane extends BorderPane {
         imageFile = file;
         mainController = mainViewController;
         Thread thread = new Thread(()->{
-            actualImage = new Image(file.getPath());
+            Image actualImage = new Image(file.getPath());
             actualWidth = actualImage.getWidth();
             actualHeight = actualImage.getHeight();
 //            System.out.println("OK");
@@ -70,9 +69,9 @@ public class ThumbnailPane extends BorderPane {
         this.setPrefSize(SIZE+30, SIZE+50);
         this.setBottom(imageName);
 
-        textField = new TextArea();
+        textField = new TextField();
         textField.setMaxHeight(40);
-        textField.setWrapText(true);    // 自动换行
+//        textField.setWrapText(true);    // 自动换行
         textField.setDisable(true);
         // 鼠标点击事件
         setOnMouseClicked(e->{
@@ -108,21 +107,16 @@ public class ThumbnailPane extends BorderPane {
     public File getImageFile(){return imageFile;}
     public Image getImage(){return imageView.getImage();}
     public long length(){return getImageFile().length();}
+
     /**
      * 单独对当前重命名
      */
     public void rename(){
-        textField.setText(imageFile.getName());
-        this.setBottom(textField);
-        textField.setDisable(false);
-        textField.setOnKeyPressed(e->{
-            if(e.getCode() == KeyCode.ENTER && !textField.isDisable()){
-                textField.setDisable(true);
-                imageName.setText(Tools.shortenString(textField.getText(), MAX_LEN));
-                this.setBottom(imageName);
-                renameOneFile(textField.getText(), true);
-                mainController.refresh();
-            }
+        Dialog<String> dialog = GenerateDialog.NewOneRenameDialog(imageFile.getName());
+        Optional<String> option = dialog.showAndWait();
+        option.ifPresent(s -> {
+            renameOneFile(s, true);
+            mainController.refresh();
         });
     }
     public int renameOneFile(String destName, boolean isInform){
@@ -137,7 +131,14 @@ public class ThumbnailPane extends BorderPane {
             }
             return 1;
         }
-        imageFile.renameTo(dest);
+        if(!imageFile.renameTo(dest)){
+            if(isInform){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setHeaderText("重命名失败");
+                alert.showAndWait();
+            }
+            return 1;
+        }
         if(isInform){
             Notifications.create()
                     .text("重命名成功")

@@ -1,14 +1,13 @@
 package com.demo.photomanage.controller;
 
 import com.demo.photomanage.ImageMain;
-import com.demo.photomanage.container.PlayData;
 import com.demo.photomanage.container.RenameData;
 import com.demo.photomanage.things.*;
 import com.demo.photomanage.utils.GenerateDialog;
 import com.demo.photomanage.utils.Tools;
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -23,6 +22,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.*;
 
@@ -198,7 +198,7 @@ public class MainViewController {
         // FlowPane的setOnMousePressed在myFlowPane中
         // 放到initPreviewPane好像也合理
         previewScrollPane.setOnKeyPressed(e->{
-            System.out.println(e.getCode());
+//            System.out.println(e.getCode());
             if(e.isControlDown()){
                 if(e.getCode() == KeyCode.A){
                     previewFlowPane.SelectAll();
@@ -307,7 +307,7 @@ public class MainViewController {
         for(File f:files) if(!f.isDirectory()){
             String newname = Tools.getAvailableName(f, nameset);
             File target = new File(previewFlowPane.getCurrentDirectory() + "\\" + newname);
-            System.out.println(target.getName());
+//            System.out.println(target.getName());
             try {
                 Files.copy(f.toPath(), target.toPath());
             }catch (Exception e){
@@ -349,7 +349,7 @@ public class MainViewController {
             previewFlowPane.getChoseImages().get(0).rename();
         }
         else{
-            Dialog<RenameData> dialog = GenerateDialog.NewMultiRename(previewFlowPane.getChoseImageNum());
+            Dialog<RenameData> dialog = GenerateDialog.NewMultiRenameDialog(previewFlowPane.getChoseImageNum());
             Optional<RenameData> option = dialog.showAndWait();
             // 如果option数据非空
             if(option.isPresent()){
@@ -397,13 +397,13 @@ public class MainViewController {
     private Stack<myTreeItem> foreStack = new Stack<>();
     private void updateUpperButtons(){
         backButton.setDisable(backStack.size() < 2);
-        System.out.println(backStack.size() < 2);
+//        System.out.println(backStack.size() < 2);
         forwardButton.setDisable(foreStack.size() == 0);
-        System.out.println(foreStack.size() == 0);
+//        System.out.println(foreStack.size() == 0);
         upwardButton.setDisable(previewFlowPane.getCurrentDirectory() == null ||
                 previewFlowPane.getCurrentDirectory().getParentFile() == ROOT_FILE);
-        System.out.println(previewFlowPane.getCurrentDirectory() == null ||
-                previewFlowPane.getCurrentDirectory().getParentFile() == ROOT_FILE);
+//        System.out.println(previewFlowPane.getCurrentDirectory() == null ||
+//                previewFlowPane.getCurrentDirectory().getParentFile() == ROOT_FILE);
     }
     @FXML
     private void backward(){

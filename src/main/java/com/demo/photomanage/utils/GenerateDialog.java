@@ -11,7 +11,7 @@ import javafx.scene.layout.GridPane;
 
 public class GenerateDialog {
 
-    public static Dialog<RenameData> NewMultiRename(int total){
+    public static Dialog<RenameData> NewMultiRenameDialog(int total){
         Dialog<RenameData> dialog = new Dialog<>();
         GridPane gridPane = new GridPane();
         TextField textField = new TextField();
@@ -39,6 +39,22 @@ public class GenerateDialog {
         });
         return dialog;
     }
+
+    public static Dialog<String> NewOneRenameDialog(String oldName){
+        Dialog<String> dialog = new Dialog<>();
+        GridPane gridPane = new GridPane();
+        TextField textField = new TextField(oldName);
+        gridPane.add(new Label("新名称: "), 0, 0);
+        gridPane.add(textField, 1, 0);
+        dialog.getDialogPane().setContent(gridPane);
+        dialog.getDialogPane().getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
+        dialog.setResultConverter(buttonType -> {
+            if(buttonType == ButtonType.OK)return textField.getText();
+            return null;
+        });
+        return dialog;
+    }
+
     public static Dialog<PlayData> NewPlayDialog(){
         Dialog<PlayData> dialog = new Dialog<>();
         GridPane gridPane = new GridPane();
