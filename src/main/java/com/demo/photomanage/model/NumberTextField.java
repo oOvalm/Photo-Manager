@@ -1,4 +1,4 @@
-package com.demo.photomanage.things;
+package com.demo.photomanage.model;
 
 import com.demo.photomanage.utils.Tools;
 import javafx.scene.control.TextField;

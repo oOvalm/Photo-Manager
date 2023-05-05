@@ -1,13 +1,10 @@
 package com.demo.photomanage.utils;
 
-import com.demo.photomanage.things.ThumbnailPane;
-import javafx.scene.control.Alert;
+import com.demo.photomanage.model.ThumbnailPane;
 import javafx.scene.image.Image;
-import javafx.scene.text.Text;
 
 import javax.swing.filechooser.FileSystemView;
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.regex.Pattern;
 

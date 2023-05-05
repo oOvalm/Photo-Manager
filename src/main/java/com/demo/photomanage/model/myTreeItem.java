@@ -1,10 +1,9 @@
-package com.demo.photomanage.things;
+package com.demo.photomanage.model;
 
 import com.demo.photomanage.utils.Tools;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 
-import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 
 public class myTreeItem extends TreeItem<String> {

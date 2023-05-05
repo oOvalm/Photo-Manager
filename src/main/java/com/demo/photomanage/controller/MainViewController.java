@@ -1,9 +1,7 @@
 package com.demo.photomanage.controller;
 
 import com.demo.photomanage.ImageMain;
-import com.demo.photomanage.container.RenameData;
-import com.demo.photomanage.things.*;
-import com.demo.photomanage.utils.GenerateDialog;
+import com.demo.photomanage.model.*;
 import com.demo.photomanage.utils.Tools;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -16,14 +14,12 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.net.URL;
-import java.nio.file.Files;
 import java.util.*;
 
 import static com.demo.photomanage.utils.GlobalValue.ROOT_FILE;
@@ -72,7 +68,7 @@ public class MainViewController implements Initializable {
     private HBox bottomBox;
 
     private myFlowPane previewFlowPane;
-    private ContextMenu menu = new ContextMenu();
+    private myMenu menu;
 
     public MainViewController(){}
     @Override
@@ -80,7 +76,8 @@ public class MainViewController implements Initializable {
 //        System.out.println("FXML");
         initPreviewPane();      // 右侧布局
         initTreeViewFile();     // 目录树
-        initMenu();             // 鼠标右键菜单
+//        initMenu();             // 鼠标右键菜单
+        menu = new myMenu(this, previewFlowPane);
         autoAdapt();    // 自适应布局
         Handler();
         updateUpperButtons();
@@ -155,24 +152,6 @@ public class MainViewController implements Initializable {
         });
     }
 
-    private void initMenu(){
-        MenuItem copyButton = new MenuItem("复制");
-        MenuItem pasteButton = new MenuItem("粘贴");
-        MenuItem refreshButton = new MenuItem("刷新");
-        MenuItem deleteButton = new MenuItem("删除");
-        MenuItem renameButton = new MenuItem("重命名");
-        MenuItem playAllButton = new MenuItem("播放所有图片");
-        // 如果此处有增删改，查一下menu.getItems()，下面好像有直接访问下标的，要对上。
-        menu.getItems().addAll(copyButton, pasteButton, refreshButton, deleteButton, renameButton, playAllButton);
-        // 都写成成员函数(不要写lambda，要复用)
-        copyButton.setOnAction(e->CopyImage());
-        pasteButton.setOnAction(e->PasteImage());
-        refreshButton.setOnAction(e->refresh());
-        deleteButton.setOnAction(e->DeleteImage());
-        renameButton.setOnAction(e->RenameImage());
-        playAllButton.setOnAction(e-> play());
-    }
-
     /**
      * 控制器，监听
      */
@@ -206,17 +185,17 @@ public class MainViewController implements Initializable {
                     updateTipInfoLabel();
                 }
                 else if(e.getCode() == KeyCode.C){
-                    CopyImage();
+                    menu.CopyImage();
                 }
                 else if(e.getCode() == KeyCode.V){
-                    PasteImage();
+                    menu.PasteImage();
                 }
             }
             else if(e.getCode() == KeyCode.F5){
                 refresh();
             }
             else if(e.getCode() == KeyCode.DELETE){
-                DeleteImage();
+                menu.DeleteImage();
             }
         });
 //        System.out.println("Handler loaded");
@@ -283,100 +262,13 @@ public class MainViewController implements Initializable {
             }
         }
         // 通过剪切板有无内容判断"粘贴"要不要disable
-        menu.getItems().get(1).setDisable(!Clipboard.getSystemClipboard().hasFiles());
-        menu.getItems().get(2).setDisable(false);   // 刷新
-        menu.getItems().get(5).setDisable(false);   // 播放图片
+        menu.getPasteButton().setDisable(!Clipboard.getSystemClipboard().hasFiles());
+        menu.getRefreshButton().setDisable(false);   // 刷新
+        menu.getPlayAllButton().setDisable(false);   // 播放图片
     }
     public void HideMenu(){menu.hide();}
     public void refresh(){previewFlowPane.UpdateView(previewFlowPane.getCurrentDirectory());}
-    public void CopyImage(){
-        Clipboard clipboard = Clipboard.getSystemClipboard();
-        ClipboardContent content = new ClipboardContent();
-        ArrayList<File> files = new ArrayList<>();
-        for(ThumbnailPane img:previewFlowPane.getChoseImages()){
-            files.add(img.getImageFile());
-        }
-        content.putFiles(files);
-        clipboard.setContent(content);
-    }
-    public void PasteImage(){
-        Clipboard clipboard = Clipboard.getSystemClipboard();
-        if(!clipboard.hasFiles())return;
-        Set<String> nameset = previewFlowPane.getNameset();
 
-        List<File> files = clipboard.getFiles();
-        for(File f:files) if(!f.isDirectory()){
-            String newname = Tools.getAvailableName(f, nameset);
-            File target = new File(previewFlowPane.getCurrentDirectory() + "\\" + newname);
-//            System.out.println(target.getName());
-            try {
-                Files.copy(f.toPath(), target.toPath());
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-        refresh();
-    }
-    public void DeleteImage(){
-        ArrayList<ThumbnailPane> images = previewFlowPane.getChoseImages();
-        if(images.size() == 0)return;
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "",
-                            ButtonType.YES, ButtonType.NO);
-        alert.setHeaderText("确认删除这"+images.size()+"张图片吗？");
-        var res = alert.showAndWait();
-        if(res.isPresent() && res.get() == ButtonType.YES) {
-            Platform.runLater(()-> {
-                for (ThumbnailPane img : images) {
-                    File file = img.getImageFile();
-                    // 此方法删除不可在回收站找回
-                    if (!file.delete()) {   // 删除失败
-                        // 不懂咋测
-                        Alert alert1 = new Alert(Alert.AlertType.ERROR, "照片" + file.getName() + "删除失败");
-                        alert1.showAndWait();
-                    }
-                }
-                refresh();
-            });
-        }
-    }
-    public void RenameImage(){
-        if(previewFlowPane.getChoseImageNum() == 0){
-            // 正常情况进不来，没选择图片，重命名按钮会disable
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText("你怎么点进来的 ERROR in MainViewController.RenameImage()");
-            alert.showAndWait();
-        }
-        else if(previewFlowPane.getChoseImageNum() == 1) {
-            previewFlowPane.getChoseImages().get(0).rename();
-        }
-        else{
-            Dialog<RenameData> dialog = GenerateDialog.NewMultiRenameDialog(previewFlowPane.getChoseImageNum());
-            Optional<RenameData> option = dialog.showAndWait();
-            // 如果option数据非空
-            if(option.isPresent()){
-                RenameData data = option.get();
-                String prefix = data.getPrefix();
-                int start = data.getStart(), digitNum = data.getDigitNum();
-                ArrayList<ThumbnailPane> images = previewFlowPane.getChoseImages();
-                int fail = 0;
-                for(ThumbnailPane img:images){
-                    String newName = Tools.RenameFormat(prefix, start, digitNum, Tools.getFileType(img.getImageFile()));
-                    fail += img.renameOneFile(newName, false);
-                    start++;
-                }
-                Alert alert = new Alert(Alert.AlertType.INFORMATION,"",ButtonType.OK);
-                alert.setHeaderText("重命名完成");
-                alert.setContentText("共重命名: " + images.size() + "\n失败: " + fail);
-                alert.showAndWait();
-                refresh();
-            }
-        }
-//        refresh();
-    }
-    private void play(){
-        ThumbnailPane image = previewFlowPane.getImages().get(0);
-        Platform.runLater(() -> ImageMain.main(image.getImageFile().getPath(), this, true));
-    }
 
     private Stage stage;
     /**

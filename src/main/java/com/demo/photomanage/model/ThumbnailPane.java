@@ -1,22 +1,18 @@
-package com.demo.photomanage.things;
+package com.demo.photomanage.model;
 
 import com.demo.photomanage.ImageMain;
-import com.demo.photomanage.Main;
 import com.demo.photomanage.controller.MainViewController;
 import com.demo.photomanage.utils.GenerateDialog;
 import com.demo.photomanage.utils.Tools;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 

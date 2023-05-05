@@ -2,7 +2,7 @@ package com.demo.photomanage.utils;
 
 import com.demo.photomanage.container.PlayData;
 import com.demo.photomanage.container.RenameData;
-import com.demo.photomanage.things.NumberTextField;
+import com.demo.photomanage.model.NumberTextField;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
