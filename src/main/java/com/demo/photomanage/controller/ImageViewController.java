@@ -157,29 +157,12 @@ public class ImageViewController implements Initializable {
      */
     private void autoAdapt(){
         // 初始化执行
-//        imagepane.setPrefSize(stage.getWidth(), stage.getHeight()*0.8);
-//        borderpane.setPrefSize(stage.getWidth(), stage.getHeight());
-//        buttonbox.setPrefSize(stage.getWidth(), stage.getHeight()*0.2);
-//        System.out.println(imagepane.getPrefHeight());
-//        System.out.println(imagepane.getPrefWidth());
         borderpane.prefHeightProperty().bind(stage.heightProperty());
         borderpane.prefWidthProperty().bind(stage.widthProperty());
         buttonbox.prefHeightProperty().bind(stage.heightProperty().multiply(0.2));
         buttonbox.prefWidthProperty().bind(stage.widthProperty());
         imagepane.prefWidthProperty().bind(stage.widthProperty());
         imagepane.prefHeightProperty().bind(stage.heightProperty().multiply(0.8));
-        // Listener
-//        stage.heightProperty().addListener((observable, oldValue, newValue)->{
-//            double val = newValue.doubleValue();
-//            buttonbox.setPrefHeight(val * 0.2);
-//            imagepane.setPrefHeight(val * 0.8);
-//        });
-//        stage.widthProperty().addListener((observable, oldValue, newValue)->{
-//            double val = newValue.doubleValue();
-//            buttonbox.setPrefWidth(val);
-//            imagepane.setPrefWidth(val);
-////            System.out.println("width: stage:"+val+"  imagepane:"+imagepane.getPrefWidth());
-//        });
     }
 
     @FXML
@@ -289,7 +272,7 @@ public class ImageViewController implements Initializable {
         Optional<PlayData> optional = dialog.showAndWait();
         if(optional.isPresent()){
             stage.show();
-            stage.setMaximized(true);
+            stage.setMaximized(false);
             playIt(optional.get().getTime());
         }
         else{
@@ -298,8 +281,8 @@ public class ImageViewController implements Initializable {
         }
     }
     private void playIt(double gap){
-        boolean oriView = stage.isMaximized();
-        stage.setMaximized(true);   // 最大化
+//        boolean oriView = stage.isMaximized();
+        stage.setFullScreen(true);  // 全屏
         imagepane.requestFocus();   // 设置焦点
         updateImageView();
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(gap), e->{
@@ -309,10 +292,16 @@ public class ImageViewController implements Initializable {
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);    // 循环无限次
         timeline.play();
+        Notifications.create()
+                .text("方向键可以切换照片")
+                .owner(stage)
+                .position(Pos.TOP_CENTER)
+                .hideAfter(Duration.seconds(5))
+                .show();
         imagepane.setOnKeyPressed(e->{
             if(e.getCode() == KeyCode.ESCAPE){
                 timeline.stop();
-                stage.setMaximized(oriView);
+                stage.setFullScreen(false);
                 imagepane.setOnKeyPressed(this::normalImagePaneHandle);
             }
             else if(e.getCode() == KeyCode.LEFT){

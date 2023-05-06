@@ -91,19 +91,6 @@ public class MainViewController implements Initializable {
     private void initTreeViewFile(){
         myTreeItem treeItem = new myTreeItem(ROOT_FILE);
         TreeViewFile.setRoot(treeItem);
-        // 鼠标事件（另一种）
-//        TreeViewFile.setOnMouseClicked(new EventHandler<MouseEvent>()
-//        {
-//            @Override
-//            public void handle(MouseEvent mouseEvent)
-//            {
-//                if(mouseEvent.getClickCount() == 2)
-//                {
-//                    TreeItem<String> item = TreeViewFile.getSelectionModel().getSelectedItem();
-//                    System.out.println("Selected Text : " + item.getValue());
-//                }
-//            }
-//        });
     }
 
     /**
@@ -162,7 +149,7 @@ public class MainViewController implements Initializable {
             updateUpperButtons();
         });
 
-        // 右侧缩略图 (鼠标按下触发)  在myFlowPane中
+        // 右侧缩略图 (监听鼠标)  在myFlowPane中
 //        previewFlowPane.setOnMousePressed(e->{
 //            Node clickNode = e.getPickResult().getIntersectedNode();     // 获取鼠标点到的东西
 //            if(e.getButton() == MouseButton.PRIMARY){   // 左键
@@ -174,7 +161,7 @@ public class MainViewController implements Initializable {
 //            }
 //        });
 
-        // 右侧缩略图 (按键盘触发，监听FlowPane无效(why))
+        // 右侧缩略图 (按键盘触发，监听FlowPane无效)
         // FlowPane的setOnMousePressed在myFlowPane中
         // 放到initPreviewPane好像也合理
         previewScrollPane.setOnKeyPressed(e->{
@@ -196,6 +183,12 @@ public class MainViewController implements Initializable {
             }
             else if(e.getCode() == KeyCode.DELETE){
                 menu.DeleteImage();
+            }
+            else if(e.getCode() == KeyCode.ENTER){
+                if(previewFlowPane.getChoseImageNum() == 1){
+                    String path = previewFlowPane.getChoseImages().get(0).getImageFile().getAbsolutePath();
+                    Platform.runLater(()->ImageMain.main(path, this, false));
+                }
             }
         });
 //        System.out.println("Handler loaded");
@@ -247,7 +240,6 @@ public class MainViewController implements Initializable {
     public void ShowMenu(double x, double y){
         updateMenuButtonAble();
         // 右键菜单坐标没对，做好窗口自适应再调(solved)
-        // TODO:(add)当鼠标靠近窗口右侧(下侧)右键时菜单出现在鼠标左侧(上侧)
         menu.show(previewAnchorPane, x, y);
     }
     public void updateMenuButtonAble(){
@@ -274,12 +266,8 @@ public class MainViewController implements Initializable {
     /**
      * 给Main设置stage
      */
-    public void setStage(Stage stage){
-        this.stage = stage;
-//        root.prefHeightProperty().bind(stage.heightProperty());
-//        root.prefWidthProperty().bind(stage.widthProperty());
-    }
-    public Stage getStage(){return stage;}
+    public void setStage(Stage stage) {this.stage = stage;}
+    public Stage getStage() {return stage;}
 
 
     /**
@@ -335,6 +323,7 @@ public class MainViewController implements Initializable {
     private void initPathText(){
         pathText.setOnKeyPressed(e->{
             if(e.getCode() == KeyCode.ENTER){
+                if(!pathText.isFocused()) return;   // 好像不用
                 root.requestFocus();
                 String path = pathText.getText();
                 File file = new File(path);

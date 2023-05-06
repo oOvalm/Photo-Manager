@@ -18,7 +18,6 @@ import java.util.Set;
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
 
-//https://www.yiibai.com/javafx/javafx-flowpane-layout.html
 public class myFlowPane extends FlowPane {
     private File curfolder;
     private ArrayList<ThumbnailPane> images = new ArrayList<>();

@@ -17,11 +17,6 @@ public class GlobalValue {
     public static String[] STORAGE_SIZE = {"B", "KB", "MB", "GB", "TB"};
     public static double EPS = 0.01;
 
-//    // 每个路径最近更新的时间戳
-//    public static HashMap<String, Long> Directory_TimeStamp = new HashMap<>();
-//    //
-//    public static HashMap<String, Long> Directory_Num = new HashMap<>();
-
     public static void initialize(){
         for(File f:FileSystemView.getFileSystemView().getRoots()[0].listFiles())
             if(Tools.getFileName(f).compareTo("此电脑") == 0)

@@ -85,7 +85,7 @@ public class ThumbnailPane extends BorderPane {
                 father.updateTipInfoLabel();
             }
             else if(e.getButton() == MouseButton.PRIMARY && e.getClickCount() == 2){
-                Platform.runLater(()->ImageMain.main(imageFile.getAbsolutePath(), mainController, false));   // 可以ImageMain 实现runnable 实现多线程
+                Platform.runLater(()->ImageMain.main(imageFile.getAbsolutePath(), mainController, false));
             }
         });
 
