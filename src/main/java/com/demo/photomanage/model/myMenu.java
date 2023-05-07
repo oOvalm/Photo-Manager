@@ -87,7 +87,6 @@ public class myMenu extends ContextMenu {
                     File file = img.getImageFile();
                     // 此方法删除不可在回收站找回
                     if (!file.delete()) {   // 删除失败
-                        // 不懂咋测
                         Alert alert1 = new Alert(Alert.AlertType.ERROR, "照片" + file.getName() + "删除失败");
                         alert1.showAndWait();
                     }

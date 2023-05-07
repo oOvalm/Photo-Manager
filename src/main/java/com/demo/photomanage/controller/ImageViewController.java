@@ -69,7 +69,7 @@ public class ImageViewController implements Initializable {
     private Stage stage;
     private Image curimage;
     private int curimageidx;
-    private ArrayList<File> images = new ArrayList<>(); // 原项目用的是自写类
+    private ArrayList<File> images = new ArrayList<>();
     private long TimeStamp = 0;
     private final static double GAP = 20;   // 图片和边缘的距离gap/2 好像有问题
     private double imageScale;

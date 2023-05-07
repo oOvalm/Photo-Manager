@@ -148,7 +148,7 @@ public class myFlowPane extends FlowPane {
 
     public ArrayList<ThumbnailPane> getChoseImages() {return choseimage;}
 
-    public void updateTipInfoLabel(){mainviewcontroller.updateTipInfoLabel();}// 给ThumbnailPane用
+    public void updateTipInfoLabel(){mainviewcontroller.updateTipInfoLabel();}
     public Rectangle getRectangle(){return rectangle;}
     public int getScrollDirection(){return scrolldirection;}
     public File getCurrentDirectory(){return curfolder;}
