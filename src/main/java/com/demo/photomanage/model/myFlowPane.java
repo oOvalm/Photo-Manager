@@ -86,7 +86,7 @@ public class myFlowPane extends FlowPane {
             }
 
             // TODO: 在MainViewController.Handler()开个线程(或者Platform.runLater)通过scrolldirection的值上下滚
-            // 在这直接滚，如果鼠标不动就不会滚。抄的项目也有这个问题
+            // 在这直接滚，如果鼠标不动就不会滚。
             // todo是一个可能的解决办法
             if(e.getSceneY() < 0) {
                 scrollpane.setVvalue(scrollpane.getVvalue() - 0.001);

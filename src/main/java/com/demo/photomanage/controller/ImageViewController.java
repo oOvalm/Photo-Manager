@@ -130,26 +130,21 @@ public class ImageViewController implements Initializable {
     /**
      * 更新图片列表，将原图片位置匹配新图片位置(curimageidx 必须是有效的)
      */
-    private void updateImageArray(int op) {
-        if(directory.lastModified() == TimeStamp)return;
+    private boolean updateImageArray() {
+        if(directory.lastModified() == TimeStamp)return false;
         TimeStamp = directory.lastModified();
-        ArrayList<File> original = new ArrayList<>(images);
-        images.clear();
-        images = Tools.getAvailableImageFiles(directory.listFiles());
-        int newidx = images.indexOf(original.get(curimageidx));
-        if(newidx != -1){
-            curimageidx = newidx;
-        }
-        else{
-            // TODO: 用最佳匹配位置代替开头(有点hard)
-            curimageidx = -op;
-            Notifications.create()
-                    .text("丢失图片位置，已回到第一张图片位置")
-                    .owner(stage)
-                    .position(Pos.TOP_CENTER)
-                    .hideAfter(Duration.seconds(5))
-                    .show();
-        }
+        ArrayList<File> upd = Tools.getAvailableImageFiles(directory.listFiles());
+        if(upd.equals((images)))return false;
+        images = upd;
+        // TODO: 用最佳匹配位置代替开头(有点hard)
+        curimageidx = 0;
+        Notifications.create()
+                .text("文件夹发生改变，已回到第一张图片位置")
+                .owner(stage)
+                .position(Pos.TOP_CENTER)
+                .hideAfter(Duration.seconds(5))
+                .show();
+        return true;
     }
 
     /**
@@ -167,30 +162,34 @@ public class ImageViewController implements Initializable {
 
     @FXML
     private void NextImage() {
-        curimageidx++;
-        if(curimageidx == images.size()){
-            curimageidx = 0;
-            Notifications.create()
-                    .text("这是第一张")
-                    .owner(stage)
-                    .position(Pos.TOP_CENTER)
-                    .hideAfter(Duration.seconds(3))
-                    .show();
+        if(!updateImageArray()){
+            curimageidx++;
+            if (curimageidx == images.size()) {
+                curimageidx = 0;
+                Notifications.create()
+                        .text("这是第一张")
+                        .owner(stage)
+                        .position(Pos.TOP_CENTER)
+                        .hideAfter(Duration.seconds(3))
+                        .show();
+            }
         }
         updateImageView();
         imagepane.requestFocus();
     }
     @FXML
     private void PrevImage() {
-        curimageidx--;
-        if(curimageidx < 0){
-            curimageidx = images.size()-1;
-            Notifications.create()
-                    .text("这是最后一张")
-                    .owner(stage)
-                    .position(Pos.TOP_CENTER)
-                    .hideAfter(Duration.seconds(3))
-                    .show();
+        if(!updateImageArray()){
+            curimageidx--;
+            if (curimageidx < 0) {
+                curimageidx = images.size() - 1;
+                Notifications.create()
+                        .text("这是最后一张")
+                        .owner(stage)
+                        .position(Pos.TOP_CENTER)
+                        .hideAfter(Duration.seconds(3))
+                        .show();
+            }
         }
         updateImageView();
         imagepane.requestFocus();

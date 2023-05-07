@@ -134,7 +134,7 @@ Notifications.create()
 
 - [x] 双击打开图片后在文件夹删除(重命名)图片，会出问题，e.g. 图片被删除后，再经过被删除图片会报错，重命名也是，而且不会将命名后的文件更新进图片窗口中。
 
-    ​	**可能的解决办法**：对每个文件夹记一个时间戳，`ImageViewController`记一个更新时的时间戳，文件夹被修改时，更新文件夹时间戳，图片窗口上下一张图片时，查一下时间戳是否对的上。<u>做了没测</u>
+    ​	**可能的解决办法**：对每个文件夹记一个时间戳，`ImageViewController`记一个更新时的时间戳，文件夹被修改时，更新文件夹时间戳，图片窗口上下一张图片时，查一下时间戳是否对的上。
 
     ​	**方法二**：`System.currentTimeMillis()`获得当前时间戳，和`Controller`比较
 
@@ -189,7 +189,6 @@ Notifications.create()
     - [x] **(add)上方文本框，通过修改路径更新**
     - [x] **(add)可返回上一个访问的文件夹，访问序列的下一个文件夹，当前文件夹的上一级**
     - [ ] **(add)右上搜索框，根据关键字搜索图片**
-    - [ ] _(优化)当鼠标靠近窗口右侧/下侧右键时菜单出现在鼠标左侧/上侧_
     - [ ] **(add)最上方菜单栏**
         - [ ] **(add)选择文件夹打开**
         - [ ] **(add)选择图片打开**
@@ -213,4 +212,3 @@ Notifications.create()
     - [x] __(add)播放幻灯片时左右键可以强行切换图片__
         - [ ] __(add)幻灯片播放选中的图片(好像要大改ImageMain/ImageViewController)__	<span id="jmp2">[2]</span>
         - [x] _(优化)新建窗口时图片显示的怪问题_，目前解决方法：I`mageMain.start()`中先show再初始化controller，若不反过来`stage`宽高为0，[这45行的注释](src\main\java\com\demo\photomanage\ImageMain.java)。
-
