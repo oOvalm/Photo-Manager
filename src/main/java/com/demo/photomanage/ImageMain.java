@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.File;
 
@@ -20,8 +21,8 @@ public class ImageMain extends Application {
         ImageMain imagemain = new ImageMain(path, isPlayNow);
         Stage stage = new Stage();
         // 设置之后主窗口关闭，它也会关
-        if(parentController != null)
-            stage.initOwner(parentController.getStage());
+//        if(parentController != null)
+//            stage.initOwner(parentController.getStage());
         try {
             imagemain.start(stage);
         } catch (Exception e){
@@ -60,7 +61,7 @@ public class ImageMain extends Application {
     public static void main(String[] args){
         GlobalValue.initialize();    // 初始化
 //        String tpath = "D:\\picture\\jpgs\\0a485fbe-193d-4918-b798-1f6214aaf495.jpg";
-        String tpath = "D:\\picture\\000testimage.png";
-        Platform.runLater(()->main(tpath, null, true));
+        String tpath = "D:\\picture\\mp4s\\1tt.jpg";
+        Platform.runLater(()->main(tpath, null, false));
     }
 }
